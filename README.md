@@ -6,12 +6,6 @@
 
 <p><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
 
-<p>
-  <a href="#quick-start">🚀 Quick start</a> ·
-  <a href="#six-review-dimensions">🔎 Six dimensions</a> ·
-  <a href="#examples">📖 Examples</a>
-</p>
-
 </div>
 
 ## What is this?

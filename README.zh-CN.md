@@ -6,12 +6,6 @@
 
 <p><a href="README.md">English</a> · <strong>简体中文</strong></p>
 
-<p>
-  <a href="#快速开始">🚀 快速开始</a> ·
-  <a href="#六个审查维度">🔎 六个维度</a> ·
-  <a href="#示例">📖 示例</a>
-</p>
-
 </div>
 
 ## 这是什么？
