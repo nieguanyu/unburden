@@ -1,6 +1,26 @@
-# Deoverfit
+<div align="center">
 
-[English](README.md) | **简体中文**
+<h1>Deoverfit</h1>
+
+<p><strong>轻量代码审查 Skill，识别不必要的特化、冗余和过度设计。</strong></p>
+
+<p><a href="README.md">English</a> · <strong>简体中文</strong></p>
+
+<p>
+  <a href="#快速开始">🚀 快速开始</a> ·
+  <a href="#六个审查维度">🔎 六个维度</a> ·
+  <a href="#示例">📖 示例</a>
+</p>
+
+</div>
+
+## 这是什么？
+
+Deoverfit 是一个适配 coding agent 的专项静态审查 Skill，检查应用代码和自进化算法中任务并不需要的假设、防御分支和抽象。每条 finding 都包含代码证据、具体后果，以及最小修改建议。
+
+可以审查当前工作区、单个源码文件，或指定的 **Candidate**；提供可选 **Base** 时聚焦版本变更，提供可选 **Task** 时结合任务意图判断。输出是审查报告，Deoverfit 保留代码原状。
+
+## 为什么需要 Deoverfit？
 
 你让 agent 做一盘西红柿炒鸡蛋，它却端来一盘红烧肉。你纠正它：
 
@@ -18,46 +38,9 @@ Agent 又加了一个 `strict=True` 参数。原来的重试和回退逻辑都�
 
 **这份代码里，留下了多少任务本来不需要的东西？**
 
-Deoverfit 是一个适配 coding agent 的轻量代码审查 Skill，检查应用代码修改和演化算法中的不必要特化、冗余与过度设计：这个分支究竟在保护什么？共享 API 带进了谁的假设？这层抽象现在有什么用途？每条 finding 都需要代码证据，并给出最小修改建议。
-
 这些故事用于说明问题形态。实际审查仍依据可见代码和契约判断哪些逻辑不必要，不猜测此前发生过什么对话。Deoverfit 不修改代码，不新增或运行测试、benchmark、性能实验；静态审查无法证明样本外表现。
 
 可以从当前工作区、单个算法文件，或 Base 到 Candidate 的修改开始：[快速开始](#快速开始)。
-
-README 提供中英文版本。核心 Skill 指令、参考文档和源码示例统一使用英文，便于不同 agent 读取同一套内容。
-
-## 审查范围与组合使用
-
-Deoverfit 是围绕[六个审查维度](#六个审查维度)展开的专项审查。它适合检查：共享能力是否混入不必要的应用假设，agent 产生的修改是否带来冗余防御或无用抽象，以及演化算法是否依赖特定测试样例或偶然的环境细节。
-
-它不承诺全面覆盖功能正确性、安全性、并发、资源管理、兼容性，以及领域与数学正确性。Deoverfit 的问题可以在这些方面产生后果，但不能仅因一个无关缺陷很严重，就把它归入 Deoverfit。Test Overfitting 检查的是代码对测试或评测上下文的依赖，不是整体测试覆盖率或测试集质量。
-
-需要更全面的代码审查时，可以搭配通用代码审查 Skill 或工作流，并按需增加安全或领域专项审查。Deoverfit 也可以独立完成其范围内的审查，不强制依赖或内置任何配套 Skill。
-
-例如，已有通用代码审查 Skill 时，可以这样使用：
-
-```text
-对同一个 Candidate 使用通用代码审查 Skill 和 Deoverfit，
-共用相同的可选 Base、Task 和源码范围。
-通用审查检查功能正确性，Deoverfit 按六个维度完成专项审查。
-标明每条问题由哪类审查证据支持，并合并同一问题的重复报告。
-只输出 findings 和最小修改建议，不修改代码、不运行测试或 benchmark。
-```
-
-各项审查分别遵守自己的证据标准。Deoverfit 不会自动安装或调用其他 Skill，不会扩展请求范围，也不会要求先完成其他审查。`No evidence-backed Deoverfit findings.` 只表示本次专项静态审查没有发现证据充分的问题，不代表代码整体通过审查。
-
-### 推荐搭配项目
-
-以下四个项目提供可选的配套审查能力。描述依据各项目公开指令，选择基于范围互补，而非审查效果排名。它们都不是 Deoverfit 的内置组件或必需依赖。
-
-| 项目 | 适合补充的审查范围 | 使用边界 |
-| --- | --- | --- |
-| [adversarial-code-review](https://github.com/contrueCT/adversarial-code-review) | 更广泛地检查需求一致性、逻辑、安全、数据完整性、并发、兼容性和测试可信度；也与范围控制及过度设计检查重叠。 | 它按风险调整审查深度，包含验证和额外审查流程。应与 Deoverfit 的静态审查区分，并遵守本次请求的执行限制。 |
-| [Anthropic pr-review-toolkit](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit) | 通过专项 Agent 检查代码质量、错误处理、类型设计、注释和测试覆盖，尤其适合 Claude Code。 | 按需选择审查 Agent。其中 code-simplifier 还支持重构；仅要求 findings 不表示授权自动修改。 |
-| [reviewing-code-modularity-skill](https://github.com/tyshkovskii/reviewing-code-modularity-skill) | 检查模块边界、耦合、内聚、公共 API，以及抽象是否解决当前问题；与 Implementation Overfitting 和 Speculative Generalization 存在重叠。 | 只需要 findings 时使用 fast review 模式。其设计和实施模式超出了单纯审查，可能涉及重构与验证。 |
-| [avoid-overdefensive-programming](https://github.com/aravelo7/codex-agent-skills/blob/main/skills/avoid-overdefensive-programming/SKILL.md) | 检查无依据的 fallback、吞异常、重试、默认值和兼容分支，同时保留合理防护；与部分冗余和残留逻辑检查重叠。 | 它也包含编码、修复、修改及验证步骤。只读审查应保持为问题报告，不能因启用它而自动修改代码或新增测试。 |
-
-需要更广覆盖时，可从前两项选择一个通用审查搭配；遇到明确的模块或防御逻辑问题，再按需增加后两项专项能力。共用同一个 Candidate、可选 Base 和 Task 以及源码范围，标明各审查的依据并合并重复问题。使用前查看配套项目的当前指令，选择兼容模式；Deoverfit 保持静态审查和只给建议的范围。
 
 ## 快速开始
 
@@ -131,28 +114,6 @@ Task: 提升解的质量，同时保留输入格式和可行性规则。
 
 算法 Candidate 可以有意改变启发式、评分或搜索行为。与 Base 不同本身不是问题。Deoverfit 检查代码中的证据，不验证所声称的性能提升，也不要求新增实验。
 
-## Agent 接入
-
-通用入口是 [skills/deoverfit/SKILL.md](skills/deoverfit/SKILL.md)，使用标准的 `name` 和 `description` YAML frontmatter。安装时复制**整个 `deoverfit` Skill 目录**，包括 `references/`。每个 agent 保留一份主要副本，避免重复发现。
-
-| Agent | 项目内 Skill 目录 | 使用方式 |
-| --- | --- | --- |
-| [Codex](https://learn.chatgpt.com/docs/build-skills) | `.agents/skills/deoverfit/` | 在 Skill 选择器中选择 Deoverfit，或直接要求使用它。 |
-| [Claude Code](https://code.claude.com/docs/en/skills) | `.claude/skills/deoverfit/` | `/deoverfit`，可选附带源码版本或范围。 |
-| [Cursor](https://cursor.com/docs/skills) | `.cursor/skills/deoverfit/` | 输入 `/` 后选择 Deoverfit。 |
-| [GitHub Copilot](https://docs.github.com/en/copilot/concepts/customizations/agent-skills) | `.github/skills/deoverfit/` | 在 agent 模式中要求使用 Deoverfit，可选指定源码版本或范围。 |
-
-这些位置依据上面链接的厂商文档；发现方式可能随产品版本和执行环境变化。其他 agent 或原生 Skill 发现不可用时，可使用上面的直接读取文件用法。agent 必须能在自己的执行环境中访问 Skill 参考文件和选定源码；本机路径不会自动出现在云端会话中。
-
-例如，从本仓库根目录安装到目标项目的 Codex Skill 目录。请替换目标路径，并确保目标 `deoverfit` 目录尚不存在：
-
-```sh
-mkdir -p /absolute/path/to/target-project/.agents/skills
-cp -R skills/deoverfit /absolute/path/to/target-project/.agents/skills/deoverfit
-```
-
-其他 agent 使用表中对应的父目录。安装是可选的；直接读取文件使用的是同一套审查指令。本仓库提供指令内容，不是厂商专用插件或强制执行沙箱。
-
 ## 六个审查维度
 
 | 维度 | 关注的问题 |
@@ -174,6 +135,30 @@ cp -R skills/deoverfit /absolute/path/to/target-project/.agents/skills/deoverfit
 
 没有足够证据时，报告 `No evidence-backed Deoverfit findings.`。这是有限范围内的静态审查结果，不是对正确性、通用性或性能的认证。无法访问的文件或未覆盖的实质范围需要说明。
 
+## Agent 接入
+
+核心 Skill 指令、参考文档和源码示例统一使用英文，便于不同 agent 读取同一套内容。
+
+通用入口是 [skills/deoverfit/SKILL.md](skills/deoverfit/SKILL.md)，使用标准的 `name` 和 `description` YAML frontmatter。安装时复制**整个 `deoverfit` Skill 目录**，包括 `references/`。每个 agent 保留一份主要副本，避免重复发现。
+
+| Agent | 项目内 Skill 目录 | 使用方式 |
+| --- | --- | --- |
+| [Codex](https://learn.chatgpt.com/docs/build-skills) | `.agents/skills/deoverfit/` | 在 Skill 选择器中选择 Deoverfit，或直接要求使用它。 |
+| [Claude Code](https://code.claude.com/docs/en/skills) | `.claude/skills/deoverfit/` | `/deoverfit`，可选附带源码版本或范围。 |
+| [Cursor](https://cursor.com/docs/skills) | `.cursor/skills/deoverfit/` | 输入 `/` 后选择 Deoverfit。 |
+| [GitHub Copilot](https://docs.github.com/en/copilot/concepts/customizations/agent-skills) | `.github/skills/deoverfit/` | 在 agent 模式中要求使用 Deoverfit，可选指定源码版本或范围。 |
+
+这些位置依据上面链接的厂商文档；发现方式可能随产品版本和执行环境变化。其他 agent 或原生 Skill 发现不可用时，可使用上面的直接读取文件用法。agent 必须能在自己的执行环境中访问 Skill 参考文件和选定源码；本机路径不会自动出现在云端会话中。
+
+例如，从本仓库根目录安装到目标项目的 Codex Skill 目录。请替换目标路径，并确保目标 `deoverfit` 目录尚不存在：
+
+```sh
+mkdir -p /absolute/path/to/target-project/.agents/skills
+cp -R skills/deoverfit /absolute/path/to/target-project/.agents/skills/deoverfit
+```
+
+其他 agent 使用表中对应的父目录。安装是可选的；直接读取文件使用的是同一套审查指令。本仓库提供指令内容，不是厂商专用插件或强制执行沙箱。
+
 ## 示例
 
 每个目录包含 `base.py`、`candidate.py`、`findings.md`、`improved.py`、`non_finding.py`，以及说明局部契约的 README。`improved.py` 和 `non_finding.py` 是解释性对照，不是额外必需输入。Python 文件是源码示例，不是测试集或 benchmark。
@@ -188,6 +173,39 @@ cp -R skills/deoverfit /absolute/path/to/target-project/.agents/skills/deoverfit
 | Environment Overfitting | [本地路径覆盖调用方配置的目录](examples/environment-overfitting/README.md) |
 | Implementation Overfitting | [导出器依赖具体存储类的私有状态](examples/implementation-overfitting/README.md) |
 | Speculative Generalization | [固定问候语外的无实际扩展用途的调度机制](examples/speculative-generalization/README.md) |
+
+## 审查范围与组合使用
+
+Deoverfit 是围绕[六个审查维度](#六个审查维度)展开的专项审查。它适合检查：共享能力是否混入不必要的应用假设，agent 产生的修改是否带来冗余防御或无用抽象，以及演化算法是否依赖特定测试样例或偶然的环境细节。
+
+它不承诺全面覆盖功能正确性、安全性、并发、资源管理、兼容性，以及领域与数学正确性。Deoverfit 的问题可以在这些方面产生后果，但不能仅因一个无关缺陷很严重，就把它归入 Deoverfit。Test Overfitting 检查的是代码对测试或评测上下文的依赖，不是整体测试覆盖率或测试集质量。
+
+需要更全面的代码审查时，可以搭配通用代码审查 Skill 或工作流，并按需增加安全或领域专项审查。Deoverfit 也可以独立完成其范围内的审查，不强制依赖或内置任何配套 Skill。
+
+例如，已有通用代码审查 Skill 时，可以这样使用：
+
+```text
+对同一个 Candidate 使用通用代码审查 Skill 和 Deoverfit，
+共用相同的可选 Base、Task 和源码范围。
+通用审查检查功能正确性，Deoverfit 按六个维度完成专项审查。
+标明每条问题由哪类审查证据支持，并合并同一问题的重复报告。
+只输出 findings 和最小修改建议，不修改代码、不运行测试或 benchmark。
+```
+
+各项审查分别遵守自己的证据标准。Deoverfit 不会自动安装或调用其他 Skill，不会扩展请求范围，也不会要求先完成其他审查。`No evidence-backed Deoverfit findings.` 只表示本次专项静态审查没有发现证据充分的问题，不代表代码整体通过审查。
+
+### 推荐搭配项目
+
+以下四个项目提供可选的配套审查能力。描述依据各项目公开指令，选择基于范围互补，而非审查效果排名。它们都不是 Deoverfit 的内置组件或必需依赖。
+
+| 项目 | 适合补充的审查范围 | 使用边界 |
+| --- | --- | --- |
+| [adversarial-code-review](https://github.com/contrueCT/adversarial-code-review) | 更广泛地检查需求一致性、逻辑、安全、数据完整性、并发、兼容性和测试可信度；也与范围控制及过度设计检查重叠。 | 它按风险调整审查深度，包含验证和额外审查流程。应与 Deoverfit 的静态审查区分，并遵守本次请求的执行限制。 |
+| [Anthropic pr-review-toolkit](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit) | 通过专项 Agent 检查代码质量、错误处理、类型设计、注释和测试覆盖，尤其适合 Claude Code。 | 按需选择审查 Agent。其中 code-simplifier 还支持重构；仅要求 findings 不表示授权自动修改。 |
+| [reviewing-code-modularity-skill](https://github.com/tyshkovskii/reviewing-code-modularity-skill) | 检查模块边界、耦合、内聚、公共 API，以及抽象是否解决当前问题；与 Implementation Overfitting 和 Speculative Generalization 存在重叠。 | 只需要 findings 时使用 fast review 模式。其设计和实施模式超出了单纯审查，可能涉及重构与验证。 |
+| [avoid-overdefensive-programming](https://github.com/aravelo7/codex-agent-skills/blob/main/skills/avoid-overdefensive-programming/SKILL.md) | 检查无依据的 fallback、吞异常、重试、默认值和兼容分支，同时保留合理防护；与部分冗余和残留逻辑检查重叠。 | 它也包含编码、修复、修改及验证步骤。只读审查应保持为问题报告，不能因启用它而自动修改代码或新增测试。 |
+
+需要更广覆盖时，可从前两项选择一个通用审查搭配；遇到明确的模块或防御逻辑问题，再按需增加后两项专项能力。共用同一个 Candidate、可选 Base 和 Task 以及源码范围，标明各审查的依据并合并重复问题。使用前查看配套项目的当前指令，选择兼容模式；Deoverfit 保持静态审查和只给建议的范围。
 
 ## 贡献
 

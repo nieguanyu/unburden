@@ -1,6 +1,26 @@
-# Deoverfit
+<div align="center">
 
-**English** | [简体中文](README.zh-CN.md)
+<h1>Deoverfit</h1>
+
+<p><strong>A lightweight code review Skill for unnecessary specialization, redundancy, and overengineering.</strong></p>
+
+<p><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
+
+<p>
+  <a href="#quick-start">🚀 Quick start</a> ·
+  <a href="#six-review-dimensions">🔎 Six dimensions</a> ·
+  <a href="#examples">📖 Examples</a>
+</p>
+
+</div>
+
+## What is this?
+
+Deoverfit is a focused static review Skill for coding agents. It checks application code and self-evolved algorithms for assumptions, defensive branches, and abstractions the task does not need. Every finding includes code evidence, a concrete consequence, and the smallest useful change suggestion.
+
+Review your current workspace, a source file, or a named **Candidate**. Add an optional **Base** to focus on changes, and an optional **Task** to explain intent. The output is a review report; Deoverfit leaves the code as it is.
+
+## Why Deoverfit?
 
 You ask an agent for scrambled eggs. It serves a steak. You correct it:
 
@@ -18,47 +38,9 @@ The agent adds `strict=True`. The retry and fallback machinery stays, behind the
 
 **What did the code pick up that the task never needed?**
 
-Deoverfit is a lightweight review Skill for coding agents that looks for unnecessary specialization, redundancy, and overengineering in application changes and evolved algorithms. It asks what each branch protects, which assumptions a shared API makes, and whether an abstraction has a current purpose. Findings need code evidence and come with the smallest useful change suggestion.
-
 These stories illustrate the kinds of issues to look for. An actual review establishes what is unnecessary from the available code and contracts, without guessing a prior conversation. Deoverfit does not edit code, add or run tests, or conduct benchmarks and performance experiments; static review cannot establish out-of-sample performance.
 
 Try it on your current workspace, a single algorithm file, or a Base-to-Candidate change: [quick start](#quick-start).
-
-This README is available in English and Simplified Chinese. The skill instructions, references, and source examples use English as their shared working language.
-
-## Review scope and complementary reviews
-
-Deoverfit is a focused review pass for the [six dimensions below](#six-review-dimensions). Use it to check whether a shared capability carries unnecessary application assumptions, an agent-generated change adds redundant defenses or unused abstractions, or an evolved algorithm depends on fixtures or accidental environment details.
-
-It does not attempt comprehensive coverage of functional correctness, security, concurrency, resource management, compatibility, or domain and mathematical correctness. A Deoverfit finding may have consequences in these areas, but an unrelated bug does not become a Deoverfit finding merely because it is serious. Test Overfitting examines test-dependent behavior; it does not assess overall test coverage or test-suite quality.
-
-For a broader code review, combine Deoverfit with a general code-review skill or workflow, adding security or domain-specific review where appropriate. Deoverfit can also be used independently for its focused scope; no particular companion skill is required or bundled.
-
-For example, when a general code-review skill is available:
-
-```text
-Use the general code-review skill and Deoverfit on the same Candidate,
-with the same optional Base, Task, and source scope.
-Check functional correctness in the general review, and apply Deoverfit's
-six dimensions in the focused review. Identify which scope supports each
-finding and merge duplicate findings about the same issue.
-Return findings and minimal suggestions without edits, tests, or benchmarks.
-```
-
-Each pass follows its own evidence criteria. Deoverfit does not automatically install or invoke other skills, expand the requested scope, or make a broader review a prerequisite. `No evidence-backed Deoverfit findings.` means no supported issue was found within this focused static review; it is not overall code approval.
-
-### Suggested companion projects
-
-These four projects offer optional complementary review capabilities. The descriptions summarize their published instructions; this is a scope-based selection, not a comparative effectiveness ranking. None is bundled with Deoverfit or required to use it.
-
-| Project | When it complements Deoverfit | Workflow boundary |
-| --- | --- | --- |
-| [adversarial-code-review](https://github.com/contrueCT/adversarial-code-review) | Broader review of requirement alignment, logic, security, data integrity, concurrency, compatibility, and test credibility. It also overlaps with scope and overengineering checks. | Its risk-adaptive workflow includes verification and additional review passes. Keep those separate from Deoverfit's static pass and honor the requested execution limits. |
-| [Anthropic pr-review-toolkit](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit) | Review code quality, error handling, type design, comments, and test coverage using focused agents. Particularly useful in Claude Code. | Select the relevant review agents. Its code-simplifier also supports refactoring; a request for findings alone does not authorize applying changes. |
-| [reviewing-code-modularity-skill](https://github.com/tyshkovskii/reviewing-code-modularity-skill) | Examine module boundaries, coupling, cohesion, public APIs, and whether an abstraction solves a current problem. It overlaps with Implementation Overfitting and Speculative Generalization. | Use its fast review mode for findings. Its design and implementation modes go beyond review and may involve refactoring and validation. |
-| [avoid-overdefensive-programming](https://github.com/aravelo7/codex-agent-skills/blob/main/skills/avoid-overdefensive-programming/SKILL.md) | Inspect unsupported fallbacks, swallowed errors, retries, defaults, and compatibility branches while preserving justified safeguards. It overlaps with some redundancy and residue checks. | This is also a coding and repair workflow with modification and verification steps. Keep a review-only request scoped to findings; its presence does not authorize edits or new tests. |
-
-Choose a broader reviewer from the first two rows when broader coverage is needed, and add a specialist from the last two for a concrete concern. Use the same Candidate, optional Base and Task, and source scope; attribute findings to the relevant pass and merge duplicates. Check each companion's current instructions for a compatible mode. Deoverfit retains its own static, suggestion-only scope.
 
 ## Quick start
 
@@ -132,28 +114,6 @@ Replace example paths, revisions, and Task descriptions with your own; omit Task
 
 An algorithm candidate may intentionally change heuristics, scoring, or search behavior. Differences from Base alone are not findings. Deoverfit reviews evidence in the code; it does not verify claimed performance gains or require new experiments.
 
-## Agent integration
-
-The portable entry point is [skills/deoverfit/SKILL.md](skills/deoverfit/SKILL.md), with standard `name` and `description` YAML frontmatter. Install the **whole `deoverfit` skill directory**, including `references/`. Keep one canonical copy per agent to avoid duplicate discovery.
-
-| Agent | Project skill directory | Invocation |
-| --- | --- | --- |
-| [Codex](https://learn.chatgpt.com/docs/build-skills) | `.agents/skills/deoverfit/` | Select Deoverfit in the skill picker or ask to use it. |
-| [Claude Code](https://code.claude.com/docs/en/skills) | `.claude/skills/deoverfit/` | `/deoverfit`, optionally followed by source versions or scope. |
-| [Cursor](https://cursor.com/docs/skills) | `.cursor/skills/deoverfit/` | Type `/` and select Deoverfit. |
-| [GitHub Copilot](https://docs.github.com/en/copilot/concepts/customizations/agent-skills) | `.github/skills/deoverfit/` | Ask agent mode to use Deoverfit, optionally specifying source versions or scope. |
-
-These locations are documented by the linked vendors; discovery varies by product version and execution surface. For another agent, or when native skill discovery is unavailable, use the direct-file prompt above. The agent needs access to the skill references and the selected source version or versions in its own execution environment; a path on your laptop is not automatically available to a cloud session.
-
-For example, from this repository root, install into a target project's Codex skill directory (replace the target path; the destination must not already exist):
-
-```sh
-mkdir -p /absolute/path/to/target-project/.agents/skills
-cp -R skills/deoverfit /absolute/path/to/target-project/.agents/skills/deoverfit
-```
-
-For the other agents, use the corresponding parent directory from the table. Installation is optional; directly reading the files has the same review instructions. This repository supplies instructions, not a vendor-specific plugin or an enforcement sandbox.
-
 ## Six review dimensions
 
 | Dimension | What to examine |
@@ -175,6 +135,30 @@ A review identifies its mode, resolved Candidate, optional Base, and reviewed sc
 
 If nothing is supported, report `No evidence-backed Deoverfit findings.` This is a limited static review result, not a certification of correctness, generality, or performance. Disclose inaccessible files or incomplete review scope.
 
+## Agent integration
+
+The skill instructions, references, and source examples use English as their shared working language.
+
+The portable entry point is [skills/deoverfit/SKILL.md](skills/deoverfit/SKILL.md), with standard `name` and `description` YAML frontmatter. Install the **whole `deoverfit` skill directory**, including `references/`. Keep one canonical copy per agent to avoid duplicate discovery.
+
+| Agent | Project skill directory | Invocation |
+| --- | --- | --- |
+| [Codex](https://learn.chatgpt.com/docs/build-skills) | `.agents/skills/deoverfit/` | Select Deoverfit in the skill picker or ask to use it. |
+| [Claude Code](https://code.claude.com/docs/en/skills) | `.claude/skills/deoverfit/` | `/deoverfit`, optionally followed by source versions or scope. |
+| [Cursor](https://cursor.com/docs/skills) | `.cursor/skills/deoverfit/` | Type `/` and select Deoverfit. |
+| [GitHub Copilot](https://docs.github.com/en/copilot/concepts/customizations/agent-skills) | `.github/skills/deoverfit/` | Ask agent mode to use Deoverfit, optionally specifying source versions or scope. |
+
+These locations are documented by the linked vendors; discovery varies by product version and execution surface. For another agent, or when native skill discovery is unavailable, use the direct-file prompt above. The agent needs access to the skill references and the selected source version or versions in its own execution environment; a path on your laptop is not automatically available to a cloud session.
+
+For example, from this repository root, install into a target project's Codex skill directory (replace the target path; the destination must not already exist):
+
+```sh
+mkdir -p /absolute/path/to/target-project/.agents/skills
+cp -R skills/deoverfit /absolute/path/to/target-project/.agents/skills/deoverfit
+```
+
+For the other agents, use the corresponding parent directory from the table. Installation is optional; directly reading the files has the same review instructions. This repository supplies instructions, not a vendor-specific plugin or an enforcement sandbox.
+
 ## Examples
 
 Each directory contains `base.py`, `candidate.py`, `findings.md`, `improved.py`, and `non_finding.py`, plus a short README stating the local contract. The latter two are explanatory alternatives, not additional review inputs. The Python snippets are self-contained source examples, not a test suite or benchmark.
@@ -189,6 +173,40 @@ For comparison mode, provide `base.py` and `candidate.py`. For snapshot mode, pr
 | Environment Overfitting | [Caller-provided catalog location displaced by a local path](examples/environment-overfitting/README.md) |
 | Implementation Overfitting | [An exporter tied to a concrete store's private storage](examples/implementation-overfitting/README.md) |
 | Speculative Generalization | [A fixed greeting with unused extension machinery](examples/speculative-generalization/README.md) |
+
+## Review scope and complementary reviews
+
+Deoverfit is a focused review pass for the [six dimensions below](#six-review-dimensions). Use it to check whether a shared capability carries unnecessary application assumptions, an agent-generated change adds redundant defenses or unused abstractions, or an evolved algorithm depends on fixtures or accidental environment details.
+
+It does not attempt comprehensive coverage of functional correctness, security, concurrency, resource management, compatibility, or domain and mathematical correctness. A Deoverfit finding may have consequences in these areas, but an unrelated bug does not become a Deoverfit finding merely because it is serious. Test Overfitting examines test-dependent behavior; it does not assess overall test coverage or test-suite quality.
+
+For a broader code review, combine Deoverfit with a general code-review skill or workflow, adding security or domain-specific review where appropriate. Deoverfit can also be used independently for its focused scope; no particular companion skill is required or bundled.
+
+For example, when a general code-review skill is available:
+
+```text
+Use the general code-review skill and Deoverfit on the same Candidate,
+with the same optional Base, Task, and source scope.
+Check functional correctness in the general review, and apply Deoverfit's
+six dimensions in the focused review. Identify which scope supports each
+finding and merge duplicate findings about the same issue.
+Return findings and minimal suggestions without edits, tests, or benchmarks.
+```
+
+Each pass follows its own evidence criteria. Deoverfit does not automatically install or invoke other skills, expand the requested scope, or make a broader review a prerequisite. `No evidence-backed Deoverfit findings.` means no supported issue was found within this focused static review; it is not overall code approval.
+
+### Suggested companion projects
+
+These four projects offer optional complementary review capabilities. The descriptions summarize their published instructions; this is a scope-based selection, not a comparative effectiveness ranking. None is bundled with Deoverfit or required to use it.
+
+| Project | When it complements Deoverfit | Workflow boundary |
+| --- | --- | --- |
+| [adversarial-code-review](https://github.com/contrueCT/adversarial-code-review) | Broader review of requirement alignment, logic, security, data integrity, concurrency, compatibility, and test credibility. It also overlaps with scope and overengineering checks. | Its risk-adaptive workflow includes verification and additional review passes. Keep those separate from Deoverfit's static pass and honor the requested execution limits. |
+| [Anthropic pr-review-toolkit](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit) | Review code quality, error handling, type design, comments, and test coverage using focused agents. Particularly useful in Claude Code. | Select the relevant review agents. Its code-simplifier also supports refactoring; a request for findings alone does not authorize applying changes. |
+| [reviewing-code-modularity-skill](https://github.com/tyshkovskii/reviewing-code-modularity-skill) | Examine module boundaries, coupling, cohesion, public APIs, and whether an abstraction solves a current problem. It overlaps with Implementation Overfitting and Speculative Generalization. | Use its fast review mode for findings. Its design and implementation modes go beyond review and may involve refactoring and validation. |
+| [avoid-overdefensive-programming](https://github.com/aravelo7/codex-agent-skills/blob/main/skills/avoid-overdefensive-programming/SKILL.md) | Inspect unsupported fallbacks, swallowed errors, retries, defaults, and compatibility branches while preserving justified safeguards. It overlaps with some redundancy and residue checks. | This is also a coding and repair workflow with modification and verification steps. Keep a review-only request scoped to findings; its presence does not authorize edits or new tests. |
+
+Choose a broader reviewer from the first two rows when broader coverage is needed, and add a specialist from the last two for a concrete concern. Use the same Candidate, optional Base and Task, and source scope; attribute findings to the relevant pass and merge duplicates. Check each companion's current instructions for a compatible mode. Deoverfit retains its own static, suggestion-only scope.
 
 ## Contributing
 
