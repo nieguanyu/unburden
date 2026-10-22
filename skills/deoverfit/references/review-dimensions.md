@@ -1,89 +1,110 @@
 # Review dimensions
 
-These six lenses apply to both comparison and snapshot reviews. They do not establish that a program is statistically overfit, reveal its development history, or require one finding per category. A finding needs Candidate code evidence, an applicable contract, a concrete consequence, and a minimal useful change. Comparison findings must also be tied to the delta; snapshot findings describe existing issues without claiming they are newly introduced. Use the reporting rules in [review-guidelines.md](review-guidelines.md).
+Apply these six lenses to Code and Text in either comparison or snapshot mode. The names describe mechanisms visible in the supplied repository states, not their origin. A finding needs Candidate evidence, an applicable contract, a concrete consequence, and a minimal useful suggestion. Comparison findings must relate to the delta; snapshot findings must not attribute an issue to a change. Follow [review-guidelines.md](review-guidelines.md) and, for agent text, [text-review.md](text-review.md).
 
-## 1. Scenario Overfitting
+## 1. Unnecessary Special Cases
 
-**Question:** Does a general capability now require assumptions from one application that its contract does not require?
+**Question:** Does a capability impose a case-specific assumption outside the scope that justifies it?
 
-Look for application names, tenant identifiers, schema rewrites, domain imports, or implicit defaults embedded in shared code. Trace how the assumption affects a supported caller. A specific identifier is a lead, not proof.
+**Code:** Inspect application names, tenant IDs, schema rewrites, domain imports, narrow input branches, and implicit defaults in shared code. Trace their effect on a supported caller. A specific identifier is a lead, not proof.
 
-**Evidence sufficient for a finding:** A general JSON encoder rewrites one application's field names while its contract promises to preserve input keys. Candidate code shows the rewrite and its effect on the public encoder. In comparison mode, the diff also ties the issue to the change.
+**Text:** Inspect local project facts or preferences promoted to global rules, one example treated as an exhaustive procedure, and task-specific output exceptions imposed on a broader skill. Establish the declared scope and the actual operative requirement; a concrete memory or few-shot example alone is not a finding.
 
-**Do not flag:** An explicitly named application adapter, a business rule in a domain module, a documented schema migration, or a capability intentionally restricted to one domain. Do not replace a valid specialized API with an invented universal one.
+**Sufficient evidence:** A JSON encoder promises to preserve keys yet rewrites one application's field names; or a memory policy explicitly confines project facts to that project while an operative rule requires every project to use that project's workflow.
 
-**Minimal direction:** Keep the shared behavior faithful to its contract; place a necessary application mapping in the existing application boundary or make the already-required choice explicit.
+**Do not flag:** Domain modules, application adapters, schema migrations, project-scoped workflows, user preferences in the correct namespace, episodic records, mathematical special cases, or intentionally specialized capabilities. Do not demand a universal API or skill.
 
-## 2. Trajectory Overfitting
+**Minimal direction:** Remove the unsupported exception or keep the required specialization within its existing domain or applicability boundary.
 
-**Question:** Is there correction-shaped residue whose redundancy or contract mismatch is provable from the final code?
+## 2. Redundant Logic and Rules
 
-The dimension's name refers to a possible source of residue, not an observable history. Inspect duplicated exclusions, guards rendered unreachable by earlier validation, obsolete fallback branches, and user-facing phrases such as “without X” when they contradict the ordinary output contract. Those shapes alone are not findings.
+**Question:** Is a check, rule, recovery path, or output qualification demonstrably redundant or inapplicable under the current contract?
 
-**Evidence sufficient for a finding:** An exhaustive allowlist rejects an ingredient before a later check for that same excluded ingredient; the second check cannot run for the documented input type. Or a new correction-specific phrase is appended to an output whose documented format excludes it.
+**Code:** Inspect duplicated exclusions, checks made unreachable by exhaustive validation, recovery branches with no reachable trigger, and output qualifications that merely repeat an already-enforced restriction while violating the specified format. Establish redundancy using the actual input types, mutation, and call path.
 
-State “the guard is unreachable after the allowlist” rather than “the agent added this after a user complained.” Do not seek intermediate commits or conversations to validate the category. If the available source cannot establish an issue, omit it; a snapshot review cannot identify when the residue appeared.
+**Text:** Inspect repeated obligations that create duplicate work, recovery steps excluded by the same workflow's admission rules, and instructions to maintain or emit an unnecessary qualification. Read conditions and precedence before treating apparently conflicting rules as simultaneously applicable. An unrelated contradiction is not automatically a Deoverfit finding.
 
-**Do not flag:** Necessary validation at an independent trust boundary, a reachable fallback with distinct semantics, a compatibility guard, a required exclusion, or a legitimate user-facing safety label. Repeated checks across mutable state or separate processes may have different purposes.
+**Sufficient evidence:** An immutable ingredient tuple containing pork is rejected by an allowlist before a second pork check; or a local Markdown-only workflow still mandates archive recovery after archives have already been rejected, and appends an excluded warning to a plain-title output.
 
-**Minimal direction:** Remove only the provably redundant check or restore the intended output. Preserve the effective validation, compatibility behavior, and required exclusions.
+**Do not flag:** Independent trust boundaries, mutable state, checks in separate processes, reachable fallbacks with distinct semantics, compatibility requirements, deliberate reinforcement that creates no demonstrated extra obligation, or required safety labels. Repeated wording alone is insufficient.
 
-## 3. Test Overfitting
+**Minimal direction:** Remove the proven duplicate or inapplicable step and restore the required output; retain effective validation, required exclusions, and meaningful recovery. Describe the present relationship, without speculating about an earlier mistake or correction.
 
-**Question:** Does production behavior depend on the test or evaluation context instead of the supported input semantics?
+## 3. Evaluation-Specific Shortcuts
 
-Inspect harness detection, fixture IDs, canned results, and narrow input branches that bypass the actual computation. Existing tests and fixture files may be read for evidence, but do not add, change, or run them.
+**Question:** Does a supported task path detect evaluation context and bypass the task's input semantics?
 
-**Evidence sufficient for a finding:** A public word counter returns a constant whenever `PYTEST_CURRENT_TEST` is set. An algorithm returns a stored answer selected by a fixture identifier rather than solving the documented input problem. Identify an actual code path and its consequence; a familiar-looking constant is insufficient.
+**Code:** Inspect harness markers, fixture IDs, and stored-answer branches that replace the real computation. Existing tests or fixtures may provide context, but neither their presence nor their execution is required.
 
-**Do not flag:** Explicit test doubles outside the production path, deterministic seeds, supported dependency injection, lookup tables that implement a domain contract, known mathematical cases, or tuned algorithm thresholds. A known benchmark shape alone does not prove test-specific behavior.
+**Text:** Inspect operative instructions to recognize an evaluator, match a case ID, or return an expected answer without doing the stated task. Distinguish these from quoted attacks, documented examples, evaluation instructions whose purpose is replay, and legitimate few-shot demonstrations.
 
-**Minimal direction:** Remove the harness or fixture shortcut and retain the real computation. Do not demand new evaluations or assert unmeasured generalization improvements.
+**Sufficient evidence:** A public word counter returns `3` whenever `PYTEST_CURRENT_TEST` is present; or an otherwise input-based counting skill directs the agent to return `3` whenever a named evaluation case ID appears, without reading the text.
 
-## 4. Environment Overfitting
+**Do not flag:** Test doubles outside production behavior, dependency injection shared with normal callers, deterministic seeds, domain lookup tables, exact mathematical cases, tuned thresholds, or expected-answer examples presented as examples. A recognizable benchmark shape or suspicious number does not establish evaluation dependence.
 
-**Question:** Does the implementation accidentally depend on one developer's environment beyond its declared deployment contract?
+**Minimal direction:** Remove the evidenced bypass and retain the real task path. Do not claim cheating, a test result, or improved empirical generalization. If evaluation dependence cannot be established, do not use this label; report under another dimension only if its own criteria are independently met. A repository with no such mechanism needs no finding in this dimension.
 
-Inspect machine-specific paths, usernames, local executables, ambient working directories, and configuration overrides. Show how an undeclared dependency enters a supported path. Do not assume cross-platform support if the project only supports one platform.
+## 4. Environment Coupling
 
-**Evidence sufficient for a finding:** A function that accepts a catalog root now replaces it with a developer's absolute path whenever that local file happens to exist, making caller configuration ineffective.
+**Question:** Is there an unnecessary dependency on a specific environment beyond the declared deployment or applicability boundary?
 
-**Do not flag:** Package-relative resources, documented configuration and defaults, required OS APIs, explicit platform adapters, or an intentionally fixed deployment location. Environment configuration can be a legitimate interface.
+**Code:** Inspect absolute paths, usernames, executables, ambient working directories, and overrides of explicit configuration. Show how the dependency enters a supported path.
 
-**Minimal direction:** Honor the existing explicit configuration or use an appropriate package-relative resource location. Avoid creating a new configuration framework for a single accidental path.
+**Text:** Inspect mandatory personal paths, machine-specific commands, platform assumptions, and environment repair steps unrelated to the required tools. Trace the written workflow and any relevant loader or script rather than assuming that all agents share a filesystem or shell.
 
-## 5. Implementation Overfitting
+**Sufficient evidence:** A catalog function replaces the caller's root with a developer's absolute path when it exists; or a multi-repository skill directs every invocation to ignore the selected repository and read one fixed personal checkout.
 
-**Question:** Is a capability tied to incidental implementation details when a suitable supported contract is already available?
+**Do not flag:** Package-relative resources, documented defaults, required OS APIs, explicit platform adapters, supported configuration, or intentionally fixed deployment locations. Do not infer portability requirements absent from the repository contract.
 
-Inspect concrete-type checks, private-state access, storage layouts, and assumptions about incidental execution order. Establish which boundary is meant to be independent and what existing interface satisfies the capability. Private access inside its owning implementation is ordinary code.
+**Minimal direction:** Honor the existing selected root or configuration, or use the appropriate package-relative resource. Avoid adding a configuration framework for a single path.
 
-**Evidence sufficient for a finding:** An exporter promised to accept providers with `records()` rejects everything except one concrete store class and reads that class's private tuple, although `records()` supplies exactly the needed data.
+## 5. Implementation Coupling
 
-**Do not flag:** Internal methods using their own state, a deliberate concrete-type API, ownership invariants, necessary representation-specific algorithms, or verified ordering requirements. Do not request an interface merely to avoid every concrete dependency.
+**Question:** Does a capability unnecessarily depend on incidental internals when an appropriate supported contract is available?
 
-**Minimal direction:** Use the available public contract or remove the unnecessary restriction. Preserve ordering, laziness, error behavior, and ownership where those are part of the contract.
+**Code:** Inspect concrete-type checks, private storage, representation layouts, and incidental execution order. Establish the intended independent boundary and the available interface. Private access inside its owner is ordinary code.
 
-## 6. Speculative Generalization
+**Text:** Inspect instructions that bypass an advertised tool interface to read a harness's private trace files or memory layout, require one internal implementation despite a broader tool contract, or fix an incidental tool-call order without a corresponding dependency.
 
-**Question:** Is there extension machinery with no reachable variation and a concrete simplification that preserves the current contract?
+**Sufficient evidence:** A provider-compatible exporter rejects all but one store type and reads its private tuple despite an adequate `records()` method; or a skill supports any `records()` provider but instructs the agent to reject alternatives and inspect one implementation's private `_rows` field.
 
-Inspect unused options, disconnected registries, duplicate dispatch layers, and abstraction stacks whose internal choices are all fixed. Trace all relevant registration and call sites before claiming they are unused. A small diff, one implementation, or missing documentation alone does not establish unnecessary complexity.
+**Do not flag:** Deliberately concrete APIs, internal ownership invariants, representation-dependent algorithms, required tool protocols, verified ordering, or a skill explicitly built for one harness. Do not create an interface merely to avoid a concrete dependency.
 
-**Evidence sufficient for a finding:** A private registry is recreated inside every greeting call with one fixed renderer, queried with a constant key, and has no registration path; an options object carries fields never read by any reachable code. The fixed behavior can be expressed directly while retaining every supported argument.
+**Minimal direction:** Use the existing public contract and remove the unsupported restriction. Preserve ordering, laziness, errors, and ownership where required.
 
-**Do not flag:** A public extension contract, multiple reachable implementations, external registrations, dependency inversion at a real boundary, required compatibility, or a simple helper that improves clarity. “We might not need it” is not evidence.
+## 6. Unnecessary Generalization
 
-**Minimal direction:** Collapse the demonstrably fixed dispatch or remove unused internal options. Do not redesign the API or remove supported extension hooks based only on local call counts.
+**Question:** Is there abstraction or extension machinery with no supported variation and a concrete removable cost?
 
-## Evolved algorithms and overlap
+**Code:** Inspect unused options, disconnected registries, duplicate dispatch, and fixed internal construction. Trace relevant registrations and consumers before declaring a mechanism unused.
 
-Base and Candidate are source-version roles. Candidate may be a self-evolved algorithm submitted to improve solution quality or runtime, with no feature implementation task. Review Candidate alone in snapshot mode or against an explicitly supplied Base in comparison mode. Individual algorithm files are sufficient inputs; evolution traces and evaluation scores are not required.
+**Text:** Inspect mandatory role registries, state tables, dispatch protocols, or alternative modes that no reachable workflow consumes. Establish the extra maintenance or execution obligation and a smaller procedure preserving the stated behavior. A long skill or a named role is not evidence by itself.
 
-Apply the same evidence bar to evolved algorithm code. A constant may be a meaningful threshold, a numerical tolerance, or a learned parameter. Branches for sparse inputs or small instances may be valid algorithms. Do not infer overfitting from these shapes or claim that a simpler alternative has the same quality or runtime without evidence available in the code and contract.
+**Sufficient evidence:** A private greeting registry is built with one fixed renderer and accessed using a constant key, with unread options; or a complete fixed local workflow requires an unconsumed transport registry and state table while explicitly selecting one direct operation for every invocation.
 
-Changes to heuristics, scoring, and search are expected in this setting. A difference from Base is not by itself evidence of a defect or overfitting, and reverting such a change is not automatically a valid simplification.
+**Do not flag:** Public extension contracts, external registrations, actual selectable modes, meaningful role separation, real trust boundaries, compatibility, useful examples, or simple helpers. One implementation, low local call counts, or missing rationale alone is insufficient.
 
-Report observable mechanisms such as a fixture-specific answer override, an ignored solver parameter, or an unnecessary dependency on a local file. Describe the mechanism rather than an empirical performance conclusion. Preserve intentional heuristics unless the finding establishes a separate concrete problem.
+**Minimal direction:** Remove only the unused internal options or mandatory bookkeeping, or express the proven fixed dispatch directly. Preserve supported hooks and active alternatives.
 
-Choose the primary dimension that best explains the fix. For example, a test-harness environment check is usually Test Overfitting; it does not need a second Environment Overfitting finding. An unreachable defensive branch may also be implementation redundancy; report it once.
+## Numeric parameters and overlap
+
+Apply the same criteria to every repository state, regardless of its provenance. Constants may encode domain rules, numeric stability, budgets, tuned policies, or learned parameters. Sparse-input branches and small-instance algorithms can be legitimate. Textual limits can also be valid workflow budgets.
+
+An unnamed number is not a Deoverfit finding merely because it is hard to explain. Renaming it does not resolve an evaluation bypass or unsupported constraint. Report the specific mechanism only when repository evidence establishes it: for example, a harness marker selects a canned count instead of processing input, or a local-case constant overrides an explicitly supported parameter. An unrelated numeric bug remains outside this focused review.
+
+Do not require parameter provenance, test cases, evaluations, or experiments. Static appearance cannot establish statistical overfitting, performance loss, or an equivalent-quality replacement. Differences in scoring, heuristics, or search from Base alone are not findings; reverting is not automatically the smallest valid correction.
+
+Choose the dimension explaining the primary mechanism and fix. A harness environment check belongs primarily to Evaluation-Specific Shortcuts, not a duplicate Environment Coupling finding. A mandatory unused registry belongs primarily to Unnecessary Generalization; redundant checks within an otherwise useful operation belong to Redundant Logic and Rules.
+
+## Terminology mapping
+
+The six directions and their evidence boundaries are retained. Earlier labels described possible origins; reports now use the mechanism names above. Example directory names use the current mechanism names as well.
+
+| Earlier label | Current dimension |
+| --- | --- |
+| Scenario Overfitting | Unnecessary Special Cases |
+| Trajectory Overfitting | Redundant Logic and Rules |
+| Test Overfitting | Evaluation-Specific Shortcuts |
+| Environment Overfitting | Environment Coupling |
+| Implementation Overfitting | Implementation Coupling |
+| Speculative Generalization | Unnecessary Generalization |
