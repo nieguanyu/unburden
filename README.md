@@ -16,13 +16,17 @@ Review the current target repository or a named **Candidate** repository state. 
 
 ## Why Deoverfit?
 
-You ask an agent for scrambled eggs. It serves a steak. You correct it:
+You ask an agent for scrambled eggs. It makes them—and adds a whole steak:
 
-> **You:** I wanted scrambled eggs.
+> **You:** Make me scrambled eggs.
+>
+> **Agent:** Here are your scrambled eggs. I added a steak, too!
+>
+> **You:** Just the eggs, please. No steak.
 >
 > **Agent:** Fixed: scrambled eggs **(steak-free edition)**.
 
-The correction has become part of the dish's name. In code, a similar exchange might leave a `disable_steak` parameter, a rejection already covered by an allowlist, or an explanation of an old mistake embedded in the public API.
+The steak is gone, but “steak-free” has become part of the dish's name. In code, a similar exchange might leave a `disable_steak` parameter, a rejection already covered by an allowlist, or an explanation of an old mistake embedded in the public API.
 
 Now consider the coding version. You ask an agent to load a required configuration file. It adds retries and a fallback to default settings. You clarify:
 
