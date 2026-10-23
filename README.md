@@ -56,21 +56,17 @@ The execution rule can be stated directly:
 
 > If the required config is missing, report the error and stop startup. Do not silently fall back to defaults.
 
-Useful rationale can explain a real boundary. Here, retelling and reconfirming the correction has become an extra obligation on every invocation.
+Useful rationale can explain a real boundary. Here, retelling and reconfirming the correction adds an unnecessary step and consumes extra tokens on every invocation.
 
-The same burden can appear in an AI paper. The task is already clear:
-
-> We study image classification: given an image, the model predicts a category label. Image generation and chatbot dialogue are outside the scope.
-
-The agent still adds:
+The same burden can appear in an AI paper. Suppose the task and scope are already defined, but the agent adds:
 
 > We focus on image classification, rather than generating images or building a chatbot. This work should not be understood as an image generator or a chatbot.
 
-The task was already defined, and the same excluded applications now appear three times. The additions introduce no new task or method distinction. Keep the original task and scope; remove the two repeated qualifications. The [complete writing example](examples/redundant-logic-and-rules/text/writing/README.md) also shows a useful contrast that should stay.
+The task is clear, yet the paper keeps emphasizing what it does not do. Directions rejected during an exchange can sometimes linger this way in the final text. Unburden checks whether these qualifications still contribute to the argument, without inferring a prior conversation from the phrasing. The [complete writing example](examples/redundant-logic-and-rules/text/writing/README.md) also shows a useful contrast that should stay.
 
 **What did the code and text pick up that the task never needed?**
 
-These stories illustrate problem shapes; a review establishes necessity from repository evidence, without guessing a prior conversation. Unburden does not edit content, add or run tests, or conduct benchmarks, performance experiments, or agent evaluations. Static review cannot establish out-of-sample performance.
+These stories illustrate the problem; a review establishes necessity from repository evidence, without guessing a prior conversation. Unburden does not edit content, add or run tests, or conduct benchmarks, performance experiments, or agent evaluations.
 
 Try it on the current repository, a selected area inside it, or a Base-to-Candidate change: [quick start](#quick-start).
 

@@ -56,29 +56,25 @@ Agent 还更新了自己的 Skill 或 Memory。一条简单规则，变成了一
 
 > 必需配置缺失时，报错并停止启动，不得静默回退到默认配置。
 
-必要的理由可以解释真实边界。这里，每次复述和确认纠错过程却成了额外义务。
+必要的理由可以解释真实边界，但是这里，每次复述和确认纠错过程却成了额外负担，增加了不必要的流程，浪费了 token。
 
-AI 论文里也可能出现同样的负担。正文已经把任务讲清楚：
-
-> 我们研究图像分类：给定一张图片，模型预测它的类别。图像生成和聊天机器人不在本文范围内。
-
-Agent 仍然补上：
+AI 论文写作里也可能出现同样的 burden。假设正文已经说明任务和范围，agent 又补上：
 
 > We focus on image classification, rather than generating images or building a chatbot. This work should not be understood as an image generator or a chatbot.
 
-任务本来已经明确，“不做图像生成和聊天机器人”却被强调了三次，没有增加新的任务或方法区分。保留原有任务定义和范围，删掉两句重复限定即可。[完整写作示例](examples/redundant-logic-and-rules/text/writing/README.md)还展示了有实际作用、应当保留的对比。
+任务已经讲清楚，文章却还在反复强调“不做什么”。交互中被否定的方向，有时会以这种方式留在最终文本里。Unburden 检查的是这些限定是否仍对论证有用，不根据句式猜测此前的对话。[完整写作示例](examples/redundant-logic-and-rules/text/writing/README.md)也展示了有实际作用、应当保留的对比。
 
 **这份代码和文本里，留下了多少任务本来不需要的东西？**
 
-故事用于说明问题形态；实际审查依据仓库证据判断必要性，不猜测此前发生过什么对话。Unburden 不修改内容，不新增或运行测试、benchmark、性能实验或 agent 评估；静态审查无法证明样本外表现。
+以上故事用于说明问题；实际审查依据仓库证据判断必要性，不猜测此前发生过什么对话。Unburden 不修改内容，不新增或运行测试、benchmark、性能实验或 agent 评估。
 
 可以从当前仓库、仓库内选定范围，或 Base 到 Candidate 的修改开始：[快速开始](#快速开始)。
 
 ## Code 与 Text
 
-| 内容 | 示例 | 审查重点 |
-| --- | --- | --- |
-| **Code** | 应用代码、算法、脚本、harness 逻辑、可执行配置。 | 分支、依赖、数据改写或抽象在适用契约下的作用。 |
+| 内容     | 示例                                                | 审查重点                                                                                             |
+| -------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Code** | 应用代码、算法、脚本、harness 逻辑、可执行配置。    | 分支、依赖、数据改写或抽象在适用契约下的作用。                                                       |
 | **Text** | Skill、prompt、规则、Memory、文章、论文及说明文档。 | 指令与记忆：适用范围及不必要的执行义务；论述性文本：句子在论证中的作用，以及可证明重复的对比或限定。 |
 
 它们是输入仓库中的内容类型，不是独立输入或需要用户选择的模式。一个 Skill 包可以同时包含两类内容；按需关联检查指令、脚本、工具和加载规则，而非只看扩展名。文章仍属于 Text，依据其主张和上下文论证判断，不把正文当作可执行规则。
@@ -106,12 +102,12 @@ Agent 仍然补上：
 
 可以用文件或目录**范围**限定仓库内的审查内容，但这不会增加独立文件输入类型。契约依据来自所提供的仓库内容，不要求单独提供任务描述、生成过程、开发历史、测试用例或评测分数。
 
-| 输入 | 模式 | 范围 |
-| --- | --- | --- |
+| 输入              | 模式                          | 范围                                     |
+| ----------------- | ----------------------------- | ---------------------------------------- |
 | Base 和 Candidate | 比较审查（Comparison review） | 两个精确状态间新增、修改或新激活的内容。 |
-| 只有 Candidate | 快照审查（Snapshot review） | Candidate 选定范围内的现存内容。 |
-| 两者都不提供 | 快照审查（Snapshot review） | 当前目标仓库工作区中的现存内容。 |
-| 只有 Base | 比较审查（Comparison review） | 从 Base 到当前目标仓库工作区的变更。 |
+| 只有 Candidate    | 快照审查（Snapshot review）   | Candidate 选定范围内的现存内容。         |
+| 两者都不提供      | 快照审查（Snapshot review）   | 当前目标仓库工作区中的现存内容。         |
+| 只有 Base         | 比较审查（Comparison review） | 从 Base 到当前目标仓库工作区的变更。     |
 
 快照报告描述当前问题，不声称问题是新增或退化。比较报告将问题与变更关联，排除未改变的既有问题。加载器的修改可能新激活未改变的文本；此时问题定位在变更的激活位置，并引用新生效的文本。两种模式均使用六个维度和相同证据标准。
 
@@ -153,14 +149,14 @@ Candidate 也可以单独使用 commit ID；省略 Candidate 时使用当前目�
 
 ## 六个审查维度
 
-| 维度 | 关注的问题 |
-| --- | --- |
-| **Unnecessary Special Cases（不必要的特例）** | 特定场景假设被施加到其合理适用范围之外。 |
-| **Redundant Logic and Rules（冗余逻辑与规则）** | 可证明重复的操作、不可达检查或恢复指令，以及不必要的输出限定。 |
+| 维度                                              | 关注的问题                                                                           |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Unnecessary Special Cases（不必要的特例）**     | 特定场景假设被施加到其合理适用范围之外。                                             |
+| **Redundant Logic and Rules（冗余逻辑与规则）**   | 可证明重复的操作、不可达检查或恢复指令，以及不必要的输出限定。                       |
 | **Evaluation-Specific Shortcuts（评测专用捷径）** | 根据评测上下文绕过实际任务的输入语义。只有仓库证据支持时才适用，不要求提供测试用例。 |
-| **Environment Coupling（环境耦合）** | 不必要地依赖特定机器、路径、平台或环境配置。 |
-| **Implementation Coupling（实现耦合）** | 已有合适的支持接口，却不必要地依赖内部实现。 |
-| **Unnecessary Generalization（不必要的泛化）** | 无用途的选项、调度、抽象或强制维护的状态，并有可具体消除的成本。 |
+| **Environment Coupling（环境耦合）**              | 不必要地依赖特定机器、路径、平台或环境配置。                                         |
+| **Implementation Coupling（实现耦合）**           | 已有合适的支持接口，却不必要地依赖内部实现。                                         |
+| **Unnecessary Generalization（不必要的泛化）**    | 无用途的选项、调度、抽象或强制维护的状态，并有可具体消除的成本。                     |
 
 证据要求、防误报边界及旧名称映射见 [review-dimensions.md](skills/unburden/references/review-dimensions.md)。输入解析和报告格式见 [review-guidelines.md](skills/unburden/references/review-guidelines.md)；文本角色、记忆范围、生效关系及文章中的冗余限定见 [text-review.md](skills/unburden/references/text-review.md)。核心参考文档使用英文。
 
@@ -182,11 +178,11 @@ Candidate 也可以单独使用 commit ID；省略 Candidate 时使用当前目�
 
 通用入口是 [skills/unburden/SKILL.md](skills/unburden/SKILL.md)，使用标准的 `name` 和 `description` YAML frontmatter。安装时复制**整个 `unburden` Skill 目录**，包括 `references/`。每个 agent 保留一份主要副本，避免重复发现。
 
-| Agent | 项目内 Skill 目录 | 使用方式 |
-| --- | --- | --- |
-| [Codex](https://learn.chatgpt.com/docs/build-skills) | `.agents/skills/unburden/` | 在 Skill 选择器中选择 Unburden，或直接要求使用它。 |
-| [Claude Code](https://code.claude.com/docs/en/skills) | `.claude/skills/unburden/` | `/unburden`，可选附带仓库 revision 或范围。 |
-| [Cursor](https://cursor.com/docs/skills) | `.cursor/skills/unburden/` | 输入 `/` 后选择 Unburden。 |
+| Agent                                                                                     | 项目内 Skill 目录          | 使用方式                                                         |
+| ----------------------------------------------------------------------------------------- | -------------------------- | ---------------------------------------------------------------- |
+| [Codex](https://learn.chatgpt.com/docs/build-skills)                                      | `.agents/skills/unburden/` | 在 Skill 选择器中选择 Unburden，或直接要求使用它。               |
+| [Claude Code](https://code.claude.com/docs/en/skills)                                     | `.claude/skills/unburden/` | `/unburden`，可选附带仓库 revision 或范围。                      |
+| [Cursor](https://cursor.com/docs/skills)                                                  | `.cursor/skills/unburden/` | 输入 `/` 后选择 Unburden。                                       |
 | [GitHub Copilot](https://docs.github.com/en/copilot/concepts/customizations/agent-skills) | `.github/skills/unburden/` | 在 agent 模式中要求使用 Unburden，可选指定仓库 revision 或范围。 |
 
 这些位置依据上面链接的厂商文档；发现方式可能随产品版本和执行环境变化。其他 agent 或原生 Skill 发现不可用时，可使用上面的直接读取文件用法。agent 必须能在自己的执行环境中访问 Skill 参考文件和选定仓库状态；本机路径不会自动出现在云端会话中。
@@ -208,14 +204,14 @@ cp -R skills/unburden /absolute/path/to/target-project/.agents/skills/unburden
 
 比较模式提供两个快照目录，快照模式只提供 `candidate/`，预期报告分别展示两种模式。输入快照包含自己的契约；预期报告和替代版本是输入之外的解释性材料。这些是静态源码示例，不是测试或 benchmark。
 
-| 维度 | Code 示例 | Text 示例 |
-| --- | --- | --- |
-| 不必要的特例 | [应用专属字段改写](examples/unnecessary-special-cases/README.md) | [项目记忆变成全局流程](examples/unnecessary-special-cases/text/README.md) |
-| 冗余逻辑与规则 | [不可达排除检查与多余后缀](examples/redundant-logic-and-rules/README.md) | [已排除输入仍有恢复指令](examples/redundant-logic-and-rules/text/README.md) |
-| 评测专用捷径 | [依赖框架标识的固定计数](examples/evaluation-specific-shortcuts/README.md) | [按 case ID 绕过计数的指令](examples/evaluation-specific-shortcuts/text/README.md) |
-| 环境耦合 | [本地路径覆盖配置](examples/environment-coupling/README.md) | [个人 checkout 替换目标仓库](examples/environment-coupling/text/README.md) |
-| 实现耦合 | [导出器读取私有存储](examples/implementation-coupling/README.md) | [指令绕过公共 provider 方法](examples/implementation-coupling/text/README.md) |
-| 不必要的泛化 | [固定问候语的无用调度](examples/unnecessary-generalization/README.md) | [固定流程的无用状态维护](examples/unnecessary-generalization/text/README.md) |
+| 维度           | Code 示例                                                                  | Text 示例                                                                          |
+| -------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| 不必要的特例   | [应用专属字段改写](examples/unnecessary-special-cases/README.md)           | [项目记忆变成全局流程](examples/unnecessary-special-cases/text/README.md)          |
+| 冗余逻辑与规则 | [不可达排除检查与多余后缀](examples/redundant-logic-and-rules/README.md)   | [已排除输入仍有恢复指令](examples/redundant-logic-and-rules/text/README.md)        |
+| 评测专用捷径   | [依赖框架标识的固定计数](examples/evaluation-specific-shortcuts/README.md) | [按 case ID 绕过计数的指令](examples/evaluation-specific-shortcuts/text/README.md) |
+| 环境耦合       | [本地路径覆盖配置](examples/environment-coupling/README.md)                | [个人 checkout 替换目标仓库](examples/environment-coupling/text/README.md)         |
+| 实现耦合       | [导出器读取私有存储](examples/implementation-coupling/README.md)           | [指令绕过公共 provider 方法](examples/implementation-coupling/text/README.md)      |
+| 不必要的泛化   | [固定问候语的无用调度](examples/unnecessary-generalization/README.md)      | [固定流程的无用状态维护](examples/unnecessary-generalization/text/README.md)       |
 
 文章写作由[重复限定示例](examples/redundant-logic-and-rules/text/writing/README.md)展示，包含两种模式的报告、最小删除建议，以及应当保留的有意义 `rather than` 对比。它归入“冗余逻辑与规则”，不增加第七个维度或独立输入类型。问题依据是实质边界的重复，不是句式本身，也不猜测此前被否定的写作方向。
 
@@ -243,12 +239,12 @@ Unburden 在选定仓库内容中检查[六个维度](#六个审查维度)，不
 
 以下四个项目提供可选的配套审查能力。描述依据各项目公开指令，选择基于范围互补，而非审查效果排名。它们都不是 Unburden 的内置组件或必需依赖。
 
-| 项目 | 适合补充的审查范围 | 使用边界 |
-| --- | --- | --- |
-| [adversarial-code-review](https://github.com/contrueCT/adversarial-code-review) | 更广泛地检查需求一致性、逻辑、安全、数据完整性、并发、兼容性和测试可信度；也与范围控制及过度设计检查重叠。 | 它按风险调整审查深度，包含验证和额外审查流程。应与 Unburden 的静态审查区分，并遵守本次请求的执行限制。 |
-| [Anthropic pr-review-toolkit](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit) | 通过专项 Agent 检查代码质量、错误处理、类型设计、注释和测试覆盖，尤其适合 Claude Code。 | 按需选择审查 Agent。其中 code-simplifier 还支持重构；仅要求 findings 不表示授权自动修改。 |
-| [reviewing-code-modularity-skill](https://github.com/tyshkovskii/reviewing-code-modularity-skill) | 检查模块边界、耦合、内聚、公共 API，以及抽象是否解决当前问题；与 Implementation Coupling 和 Unnecessary Generalization 存在重叠。 | 只需要 findings 时使用 fast review 模式。其设计和实施模式超出了单纯审查，可能涉及重构与验证。 |
-| [avoid-overdefensive-programming](https://github.com/aravelo7/codex-agent-skills/blob/main/skills/avoid-overdefensive-programming/SKILL.md) | 检查无依据的 fallback、吞异常、重试、默认值和兼容分支，同时保留合理防护；与部分冗余和残留逻辑检查重叠。 | 它也包含编码、修复、修改及验证步骤。只读审查应保持为问题报告，不能因启用它而自动修改代码或新增测试。 |
+| 项目                                                                                                                                        | 适合补充的审查范围                                                                                                                | 使用边界                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| [adversarial-code-review](https://github.com/contrueCT/adversarial-code-review)                                                             | 更广泛地检查需求一致性、逻辑、安全、数据完整性、并发、兼容性和测试可信度；也与范围控制及过度设计检查重叠。                        | 它按风险调整审查深度，包含验证和额外审查流程。应与 Unburden 的静态审查区分，并遵守本次请求的执行限制。 |
+| [Anthropic pr-review-toolkit](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit)                    | 通过专项 Agent 检查代码质量、错误处理、类型设计、注释和测试覆盖，尤其适合 Claude Code。                                           | 按需选择审查 Agent。其中 code-simplifier 还支持重构；仅要求 findings 不表示授权自动修改。              |
+| [reviewing-code-modularity-skill](https://github.com/tyshkovskii/reviewing-code-modularity-skill)                                           | 检查模块边界、耦合、内聚、公共 API，以及抽象是否解决当前问题；与 Implementation Coupling 和 Unnecessary Generalization 存在重叠。 | 只需要 findings 时使用 fast review 模式。其设计和实施模式超出了单纯审查，可能涉及重构与验证。          |
+| [avoid-overdefensive-programming](https://github.com/aravelo7/codex-agent-skills/blob/main/skills/avoid-overdefensive-programming/SKILL.md) | 检查无依据的 fallback、吞异常、重试、默认值和兼容分支，同时保留合理防护；与部分冗余和残留逻辑检查重叠。                           | 它也包含编码、修复、修改及验证步骤。只读审查应保持为问题报告，不能因启用它而自动修改代码或新增测试。   |
 
 需要更广覆盖时，可从前两项选择一个通用审查搭配；遇到明确的模块或防御逻辑问题，再按需增加后两项专项能力。共用同一个 Candidate 仓库、可选 Base 及选定范围，标明各审查的依据并合并重复问题。使用前查看配套项目的当前指令，选择兼容模式；Unburden 保持静态审查和只给建议的范围。
 
