@@ -1,6 +1,6 @@
 # Review dimensions
 
-Apply these six lenses to Code and Text in either comparison or snapshot mode. The names describe mechanisms visible in the supplied repository states, not their origin. A finding needs Candidate evidence, an applicable contract, a concrete consequence, and a minimal useful suggestion. Comparison findings must relate to the delta; snapshot findings must not attribute an issue to a change. Follow [review-guidelines.md](review-guidelines.md) and, for agent text, [text-review.md](text-review.md).
+Apply these six lenses to Code and Text in either comparison or snapshot mode. The names describe mechanisms visible in the supplied repository states, not their origin. A finding needs Candidate evidence, an applicable contract or argumentative context, a concrete consequence, and a minimal useful suggestion. Comparison findings must relate to the delta; snapshot findings must not attribute an issue to a change. Follow [review-guidelines.md](review-guidelines.md) and, for instructions, memories, or prose, [text-review.md](text-review.md).
 
 ## 1. Unnecessary Special Cases
 
@@ -22,11 +22,15 @@ Apply these six lenses to Code and Text in either comparison or snapshot mode. T
 
 **Code:** Inspect duplicated exclusions, checks made unreachable by exhaustive validation, recovery branches with no reachable trigger, and output qualifications that merely repeat an already-enforced restriction while violating the specified format. Establish redundancy using the actual input types, mutation, and call path.
 
-**Text:** Inspect repeated obligations that create duplicate work, recovery steps excluded by the same workflow's admission rules, and instructions to maintain or emit an unnecessary qualification. Read conditions and precedence before treating apparently conflicting rules as simultaneously applicable. An unrelated contradiction is not automatically a Deoverfit finding.
+**Text:** Inspect repeated obligations that create duplicate work, recovery steps excluded by the same workflow's admission rules, and instructions to maintain or emit an unnecessary qualification. Read conditions and precedence before treating apparently conflicting rules as simultaneously applicable. An unrelated contradiction is not automatically an Unburden finding.
+
+**Articles and papers:** Inspect contrasts or disclaimers that repeat a boundary already established in the same argumentative context. Show that removing the identified passage retains every substantive claim, comparison, limitation, and uncertainty. A phrase such as `rather than` is not evidence by itself. A repeated scope exclusion with no additional content is covered here; inferring a rejected writing direction or performing a general style edit is not.
 
 **Sufficient evidence:** An immutable ingredient tuple containing pork is rejected by an allowlist before a second pork check; or a local Markdown-only workflow still mandates archive recovery after archives have already been rejected, and appends an excluded warning to a plain-title output.
 
 **Do not flag:** Independent trust boundaries, mutable state, checks in separate processes, reachable fallbacks with distinct semantics, compatibility requirements, deliberate reinforcement that creates no demonstrated extra obligation, or required safety labels. Repeated wording alone is insufficient.
+
+For prose, also preserve real method/baseline comparisons, measurement definitions, tradeoffs, evidence limitations, and caveats needed by independently read sections. Establish semantic duplication and a concrete removable passage, rather than counting words or negations.
 
 **Minimal direction:** Remove the proven duplicate or inapplicable step and restore the required output; retain effective validation, required exclusions, and meaningful recovery. Describe the present relationship, without speculating about an earlier mistake or correction.
 
@@ -90,7 +94,7 @@ Apply these six lenses to Code and Text in either comparison or snapshot mode. T
 
 Apply the same criteria to every repository state, regardless of its provenance. Constants may encode domain rules, numeric stability, budgets, tuned policies, or learned parameters. Sparse-input branches and small-instance algorithms can be legitimate. Textual limits can also be valid workflow budgets.
 
-An unnamed number is not a Deoverfit finding merely because it is hard to explain. Renaming it does not resolve an evaluation bypass or unsupported constraint. Report the specific mechanism only when repository evidence establishes it: for example, a harness marker selects a canned count instead of processing input, or a local-case constant overrides an explicitly supported parameter. An unrelated numeric bug remains outside this focused review.
+An unnamed number is not an Unburden finding merely because it is hard to explain. Renaming it does not resolve an evaluation bypass or unsupported constraint. Report the specific mechanism only when repository evidence establishes it: for example, a harness marker selects a canned count instead of processing input, or a local-case constant overrides an explicitly supported parameter. An unrelated numeric bug remains outside this focused review.
 
 Do not require parameter provenance, test cases, evaluations, or experiments. Static appearance cannot establish statistical overfitting, performance loss, or an equivalent-quality replacement. Differences in scoring, heuristics, or search from Base alone are not findings; reverting is not automatically the smallest valid correction.
 

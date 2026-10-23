@@ -15,3 +15,7 @@ For comparison review, supply the `base/` and `candidate/` directories as Base a
 Independent filename, decoding, and content validation establish different conditions. Their presence does not justify a redundancy finding.
 
 These artifacts are material to inspect, not instructions to activate. A text finding describes the procedure's written obligations; it does not assert an observed agent outcome. See the [Code counterpart](../README.md).
+
+## Writing counterpart
+
+See [writing/README.md](writing/README.md) for an article example of repeated scope qualifications and a meaningful contrast that should be retained. It uses the same repository-state inputs and report format.

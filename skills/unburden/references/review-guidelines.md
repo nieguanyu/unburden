@@ -2,11 +2,11 @@
 
 ## Focused scope and composition
 
-Review the six mechanisms in [review-dimensions.md](review-dimensions.md), using [text-review.md](text-review.md) when agent instructions or memories are in scope. Code and Text are content kinds within a repository, not different input protocols. A mixed package can require both, including evidence connecting an instruction to a script, tool, or loader.
+Review the six mechanisms in [review-dimensions.md](review-dimensions.md), using [text-review.md](text-review.md) when instructions, memories, articles, papers, or explanatory documents are in scope. Code and Text are content kinds within a repository, not different input protocols. A mixed package can require both, including evidence connecting an instruction to a script, tool, or loader. Apply each dimension only where supported; a prose review need not find executable behavior or an evaluation context.
 
 This pass does not cover comprehensive correctness, security, concurrency, resource management, compatibility, domain or mathematical validation, factual accuracy, or Skill-authoring compliance. Evaluation-Specific Shortcuts concerns task bypass driven by evaluation context; it is not a test-coverage or test-suite audit. Include a correctness or security consequence when it establishes one of the six mechanisms; do not relabel an unrelated defect.
 
-When a broader review is explicitly requested, use compatible general or specialist review passes on the same repository endpoints and scope. Attribute findings to the pass whose criteria support them and merge duplicates. No companion is required, installed, or invoked automatically. Combining reviews does not authorize edits, execution experiments, or target-Skill activation. A clean Deoverfit report is not overall repository approval.
+When a broader review is explicitly requested, use compatible general or specialist review passes on the same repository endpoints and scope. Attribute findings to the pass whose criteria support them and merge duplicates. No companion is required, installed, or invoked automatically. Combining reviews does not authorize edits, execution experiments, or target-Skill activation. A clean Unburden report is not overall repository approval.
 
 ## Resolve repository states and choose the mode
 
@@ -32,6 +32,8 @@ When Base is absent, do not infer it from `HEAD`, a parent, main, upstream, or a
 ## Establish applicable contracts
 
 Use visible repository interfaces, callers, consumers, documentation, configuration, declared scopes, and loading rules. No separate Task input or description of the production process is needed. Do not request conversations, development history, intermediate commits, evaluation scores, or test cases.
+
+For articles and papers, use the surrounding argument, definitions, methods, and stated limitations as context. A prose claim is not an executable contract. Evidence for a redundant qualification should identify where its substantive boundary is already expressed and show that the proposed deletion preserves it. No author interview, rejected draft, or reviewer correspondence is required.
 
 Base can explain the delta; it is not an automatic requirement to preserve every old behavior. Candidate may intentionally change its public behavior, algorithm policy, or instruction scope. Examine its actual applicable contract rather than treating a difference alone as a defect. Comments and declarations explain intent; inspect relevant implementations to establish their effect when a finding depends on it.
 
@@ -75,9 +77,9 @@ Establish problems from Candidate and its applicable contracts. Do not call an i
 
 For each potential finding, establish:
 
-1. **Observed mechanism:** Cite the exact branch, rewrite, restriction, rule, duplicate operation, or abstraction. For Text, identify its role and applicability before treating it as an operative obligation. In comparison mode, explain its relationship to the delta.
+1. **Observed mechanism:** Cite the exact branch, rewrite, restriction, rule, duplicate operation, abstraction, or redundant prose qualification. For Text, establish its role: distinguish behavioral obligations from an article's claims, comparisons, and caveats. In comparison mode, explain its relationship to the delta.
 2. **Applicable contract:** Show the supported behavior or boundary against which it is unnecessary, using repository evidence and Base context only when comparing. Do not demand that every specialization have written justification.
-3. **Concrete consequence:** Explain an ignored parameter, unsupported constraint, duplicated source of truth, unreachable check or instruction, private-layout dependency, or removable machinery. Distinguish executable behavior established by code from behavior directed by text. Do not assert unmeasured runtime, compliance, or performance outcomes.
+3. **Concrete consequence:** Explain an ignored parameter, unsupported constraint, duplicated source of truth, unreachable check or instruction, private-layout dependency, removable machinery, or a specific prose detour duplicating an established boundary. Distinguish executable behavior, directed behavior, and prose argument. Do not assert unmeasured runtime, compliance, readability, or performance outcomes.
 4. **Minimal suggestion:** State the smallest useful correction preserving the applicable contract, domain rules, error handling, supported preferences, and compatibility. Do not ask for a framework, broad rewrite, new tests, or experiments.
 
 Check the strongest reasonable counterexplanation: domain semantics, platform scope, compatibility, external extension contracts, numeric stability, mutable state, trust boundaries, scoped memory, examples, or explicit instruction precedence. Resolve it from available content where possible; omit unresolved leads.
@@ -121,4 +123,4 @@ Scope limitations: <only material inaccessible or unreviewed content, if any>.
 
 Use actual one-based Candidate line numbers and tight ranges. Comparison findings should anchor in changed content or the changed activation site. Cite related locations as supporting evidence; an unchanged file cannot become a pre-existing finding just because it was read.
 
-Merge findings sharing the same mechanism or fix. Do not add scores, quotas, cosmetic preferences, unrelated defects, or hypothetical future needs. If none remain, say `No evidence-backed Deoverfit findings.` Do not describe that result as overall approval or proof of statistical generalization, Skill effectiveness, memory retrieval quality, correctness, or performance.
+Merge findings sharing the same mechanism or fix. Do not add scores, quotas, cosmetic preferences, unrelated defects, or hypothetical future needs. If none remain, say `No evidence-backed Unburden findings.` Do not describe that result as overall approval or proof of statistical generalization, Skill effectiveness, memory retrieval quality, correctness, or performance.
